@@ -1,9 +1,7 @@
 package FeedReader;
 import java.net.URL;
 import java.util.Iterator;
-
 import parser.Handler;
-
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
@@ -11,12 +9,14 @@ import com.sun.syndication.io.XmlReader;
 
 public class FeedReader {
 
+	public static final String Yahoo = "http://feeds.finance.yahoo.com/rss/2.0/headline?s=intc&region=US&lang=en-US";
+	
   public static void main(String[] args) throws Exception {
 	int urlAmount = 1;
 	URL[] feedUrl;
     feedUrl = new URL[urlAmount];
     
-    feedUrl[0] = new URL("http://feeds.finance.yahoo.com/rss/2.0/headline?s=intc&region=US&lang=en-US");
+    feedUrl[0] = new URL(Yahoo);
     XmlReader xmlReader = null;
 
 	for(int i=0; i < urlAmount; i++){
