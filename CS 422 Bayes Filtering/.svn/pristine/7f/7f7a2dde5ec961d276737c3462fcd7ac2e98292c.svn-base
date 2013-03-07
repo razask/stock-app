@@ -1,0 +1,103 @@
+package parser;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jsoup.Jsoup;
+import org.jsoup.examples.HtmlToPlainText;
+import org.jsoup.nodes.Document;
+
+import de.l3s.boilerpipe.extractors.ArticleExtractor;
+
+public class Parser {
+
+	public Map<String, Integer> frequencies;
+
+	public void handler(String url) throws Exception {
+		Document doc = Jsoup.connect(url).get();
+		String formattedText = textFormatter(doc);
+		String site = returnDomain(url);
+		HashMap<String, Integer> ticker = tickerCounter(doc);
+		HashMap<String, Integer> wordFreq = counter(formattedText);
+	}
+
+	private static HashMap<String, Integer> counter(String body) throws Exception {
+		String[] lines = body.split("\n");
+		HashMap<String, Integer> frequencies = new HashMap<String, Integer>();
+		for (int i = 0; i < lines.length; i++) {
+			String[] words = lines[i].split(" ");
+			for (String w : Arrays.asList(words)) {
+				Integer num = frequencies.get(w);
+				if (num != null) {
+					frequencies.put(w, num + 1);
+				} else {
+					frequencies.put(w, 1);
+				}
+			}
+		}
+		HashMap<String, Integer> filteredList = filter(frequencies);
+		System.out.println(filteredList);
+		return filteredList;
+	}
+
+	private static HashMap<String, Integer> filter(HashMap<String, Integer> input) throws Exception{
+		FileReader list = new FileReader("./src/resources/Exclusion List");
+		BufferedReader bufRead = new BufferedReader(list);
+		String myLine = null;
+		
+		while ( (myLine = bufRead.readLine()) != null)
+		{    
+		    String[] parselist = myLine.split("\n");
+			for (int i = 0; i < parselist.length; i++) {
+				String word = parselist[i];
+				if (input.containsKey(word)){
+					input.remove(word);
+				}
+			}
+		}
+		return input;
+	}
+
+	private String returnDomain(String url) throws Exception {
+		String site = new URL(url).getHost();
+		System.out.println(site);
+		return site;
+	}
+
+	private String textFormatter(Document doc) throws Exception {
+		HtmlToPlainText formatter = new HtmlToPlainText();
+		String plainText = formatter.getPlainText(doc);
+		// System.out.println(plainText);
+		String bodyText = ArticleExtractor.INSTANCE.getText(plainText);
+		// System.out.println(bodyText);
+		String formattedText = bodyText.toLowerCase();
+		// System.out.println(formattedText);
+		formattedText = formattedText.replaceAll("[^a-zA-Z\\s\\n']", "");
+		// System.out.println(formattedText);
+		return formattedText;
+	}
+
+	private static HashMap<String, Integer> tickerCounter(Document doc) {
+		HtmlToPlainText formatter = new HtmlToPlainText();
+		String text = formatter.getPlainText(doc);
+		String[] lines = text.split("\n");
+		HashMap<String, Integer> frequencies = new HashMap<String, Integer>();
+		for (int i = 0; i < lines.length; i++) {
+			String[] words = lines[i].split(" ");
+			for (String w : Arrays.asList(words)) {
+				if (w.matches("((?-i)(?<=\\s|^)[A-Z]{1,5}(\\.[A-Z]{1,2})?(?=\\s|$))")) {
+					frequencies.put(w, 1);
+				} else {
+				}
+			}
+		}
+		System.out.println(frequencies);
+		return frequencies;
+	}
+}

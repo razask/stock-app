@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/jsoup-1.7.2.jar" sourcepath="C:/Users/Johnny/Downloads/jsoup-1.7.2-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/boilerpipe-core"/>
+	<classpathentry kind="lib" path="/Users/scottpearson/Documents/workspace/feeds/parser/jdom-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/scottpearson/Documents/workspace/feeds/parser/rome-1.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

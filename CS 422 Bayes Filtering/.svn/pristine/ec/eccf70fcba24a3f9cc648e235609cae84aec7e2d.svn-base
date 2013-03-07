@@ -1,0 +1,16 @@
+package parser;
+
+public class Handler {
+
+	public static void main(String... args) {
+		Parser parser = new Parser();
+		try {
+			parser.handler(
+					"http://seekingalpha.com/article/1040421-north-atlantic-drilling-cheapest-offshore-driller-with-a-huge-9-yield"
+					);
+		} catch (Exception e) {
+			System.out.println("bad url");
+			e.printStackTrace();
+		}
+	}
+}
