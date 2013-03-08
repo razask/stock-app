@@ -2,19 +2,14 @@ package parser;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.hsqldb.lib.Iterator;
 
-import database.DBWriterCS422;
 
 public class RefiningAlgorithmCS422 {
 
-	static HashMap<String, Integer> counter(String body) throws Exception {
+	public static HashMap<String, Integer> counter(String body) throws Exception {
 		String[] lines = body.split("\n");
 		HashMap<String, Integer> frequencies = new HashMap<String, Integer>();
 		for (int i = 0; i < lines.length; i++) {
@@ -31,7 +26,7 @@ public class RefiningAlgorithmCS422 {
 		HashMap<String, Integer> filteredList = filter(frequencies);
 		// filteredList = positiveFilter(frequencies);
 		// filteredList = negativeFilter(frequencies);
-		System.out.println(filteredList);
+//		System.out.println(filteredList);
 		return filteredList;
 	}
 

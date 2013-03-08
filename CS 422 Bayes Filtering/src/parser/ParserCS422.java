@@ -1,23 +1,16 @@
 package parser;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.Reader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
-import javax.swing.text.html.HTML;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.examples.HtmlToPlainText;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-import org.w3c.dom.Element;
 
 import de.l3s.boilerpipe.extractors.ArticleExtractor;
 

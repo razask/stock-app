@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import parser.RefiningAlgorithmCS422;
+
 public class DBWriterCS422 {
 
 	static PreparedStatement article_insert = null;
@@ -26,14 +28,13 @@ public class DBWriterCS422 {
 
 	public static void insertArticleArchive(String media, String source,
 			String author, String url, String content, Double score)
-			throws SQLException {
+			throws Exception {
 		Connection c = null;
 		try {
 			Class.forName("org.hsqldb.jdbc.JDBCDriver");
 		} catch (Exception e) {
 			System.err.println("ERROR: failed to load HSQLDB JDBC driver.");
 			e.printStackTrace();
-			return;
 		}
 
 		System.out.println("Connecting to a selected database...");
@@ -45,9 +46,7 @@ public class DBWriterCS422 {
 		article_check = c.prepareStatement(articlePresent);
 		article_check.setString(1, url);
 		ResultSet rs = article_check.executeQuery();
-		if (!rs.next())
-			;
-		{
+		if (!rs.next()) {
 
 			article_insert = c.prepareStatement(articleString);
 			article_insert.setString(1, media);
@@ -60,12 +59,16 @@ public class DBWriterCS422 {
 			article_insert.executeUpdate();
 			c.commit();
 			System.out.println("Article Archived");
+			HashMap<String, Integer> wordFreq = RefiningAlgorithmCS422.counter(content);
+			DBWriterCS422.refineEntry(wordFreq, score);
 		}
+		else {
 		System.out.println("Article Already exists");
+		}
 	}
 
 	public static void refineEntry(HashMap<String, Integer> wordFreq,
-			Double reviewScore) throws SQLException {
+		Double reviewScore) throws SQLException {
 		String key = null;
 		double count = -1;
 
