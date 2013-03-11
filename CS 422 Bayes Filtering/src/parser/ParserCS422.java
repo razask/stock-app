@@ -33,7 +33,7 @@ public class ParserCS422 {
 		System.out.println(result);
 	}
 
-	private static float dumbreview(String body) throws Exception {
+	public static float dumbreview(String body) throws Exception {
 		String[] lines = body.split("\n");
 		HashMap<String, Integer> frequencies = new HashMap<String, Integer>();
 		for (int i = 0; i < lines.length; i++) {
@@ -49,6 +49,7 @@ public class ParserCS422 {
 		}
 		float positive = positiveFilter(frequencies);
 		float negative = negativeFilter(frequencies);
+		System.out.println("----- Break -----");
 		System.out.println(frequencies.size());
 		System.out.println(positive);
 		System.out.println(negative);

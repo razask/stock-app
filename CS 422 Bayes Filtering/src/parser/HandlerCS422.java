@@ -1,5 +1,9 @@
 package parser;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.jsoup.nodes.Document;
@@ -9,7 +13,7 @@ import database.DBWriterCS422;
 
 public class HandlerCS422 {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Document doc = null;
 		Element[] rlist = null;
 		String media = null;
@@ -17,38 +21,54 @@ public class HandlerCS422 {
 		String author = null;
 		String content = null;
 		String url = null;
-		Double reviewScore = -1.0;
-		int articleCount = 0;
+		double reviewScore = -1.0;
 		int size = 0;
+		double articleCount = 0;
 
 		try {
 			System.out.println("starting");
-			try{
-			doc = JsoupConnectorCS422
-					.connector("http://www.metacritic.com/movie/hansel-and-gretel-witch-hunters/critic-reviews");
-			media = ExtractorCS422.extractMedia(doc);
-			rlist = ExtractorCS422.reviewList(doc);
-			} catch (Exception e){
-				e.printStackTrace();
+
+			FileReader list = new FileReader("./src/resources/movielist");
+			BufferedReader bufRead = new BufferedReader(list);
+			String myLine = null;
+			while ((myLine = bufRead.readLine()) != null) {
+				String[] parselist = myLine.split("\n");
+				for (int i = 0; i < parselist.length; i++) {
+					String word = parselist[i];
+					try {
+						doc = JsoupConnectorCS422
+								.connector("http://www.metacritic.com/movie/"
+										+ word + "/critic-reviews");
+						rlist = ExtractorCS422.reviewList(doc);
+						media = ExtractorCS422.extractMedia(doc);
+					} catch (Exception e) {
+						System.out.println(word);
+					}
+
+					size = rlist.length;
+					for (int j = 0; j < size; j++) {
+						try {
+							Element currentR = rlist[j];
+							source = ExtractorCS422.extractSource(currentR);
+							author = ExtractorCS422.extractAuthor(currentR);
+							url = ExtractorCS422.extractURL(currentR);
+							content = ExtractorCS422.extractContent(url);
+							reviewScore = ExtractorCS422
+									.extractReviewScore(currentR);
+							DBWriterCS422.insertArticleArchive(media, source,
+									author, url, content, reviewScore);
+							articleCount += 1;
+							System.out.println((j + 1) + " out of " + size);
+						} catch (Exception e) {
+							continue;
+						}
+					}
+
+				}
 			}
-			size = rlist.length;
-			for (int i = 0; i < size; i++) {
-				try{
-				Element currentR = rlist[i];
-				source = ExtractorCS422.extractSource(currentR);
-				author = ExtractorCS422.extractAuthor(currentR);
-				url = ExtractorCS422.extractURL(currentR);
-				content = ExtractorCS422.extractContent(url);
-				reviewScore = ExtractorCS422.extractReviewScore(currentR);
-				DBWriterCS422.insertArticleArchive(media, source, author, url, content, reviewScore);
-				articleCount += 1;
-				} catch (Exception e){
-					continue;
-				}
-				}
-			} finally {
+		} finally {
 			System.out.println("made it");
-			System.out.println(articleCount + " out of " + size);
+			System.out.println(articleCount);
 		}
 	}
 }

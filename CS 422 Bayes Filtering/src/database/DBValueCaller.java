@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import parser.ParserCS422;
 import parser.RefiningAlgorithmCS422;
 
 public class DBValueCaller {
@@ -120,6 +121,17 @@ public class DBValueCaller {
 			System.out.println(URLList[i]);
 			System.out.println(evalScore);
 		}
+		
+//		for (int i = 0; i < URLList.length; i++) {
+//			articleReturner = c.prepareStatement(articleURL);
+//			articleReturner.setString(1, URLList[i]);
+//			ResultSet extractedContent = articleReturner.executeQuery();
+//			while (extractedContent.next()) {
+//				content = extractedContent.getNString(1);
+//			}
+//			float result = ParserCS422.dumbreview(content);
+//			System.out.println(result);
+//		}
 	}
 
 }
