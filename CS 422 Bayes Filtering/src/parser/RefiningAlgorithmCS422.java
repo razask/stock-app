@@ -5,11 +5,10 @@ import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
 
-
-
 public class RefiningAlgorithmCS422 {
 
-	public static HashMap<String, Integer> counter(String body) throws Exception {
+	public static HashMap<String, Integer> counter(String body)
+			throws Exception {
 		String[] lines = body.split("\n");
 		HashMap<String, Integer> frequencies = new HashMap<String, Integer>();
 		for (int i = 0; i < lines.length; i++) {
@@ -23,16 +22,21 @@ public class RefiningAlgorithmCS422 {
 				}
 			}
 		}
-		HashMap<String, Integer> filteredList = filter(frequencies);
+		HashMap<String, Integer> filteredList = filter(frequencies, "PRE");
 		// filteredList = positiveFilter(frequencies);
 		// filteredList = negativeFilter(frequencies);
-//		System.out.println(filteredList);
+		// System.out.println(filteredList);
 		return filteredList;
 	}
 
-	private static HashMap<String, Integer> filter(
-			HashMap<String, Integer> input) throws Exception {
-		FileReader list = new FileReader("./src/resources/Exclusion List");
+	public static HashMap<String, Integer> filter(
+			HashMap<String, Integer> input, String exclude) throws Exception {
+		FileReader list = null;
+		if (exclude == "PRE") {
+			list = new FileReader("./src/resources/PreExclusionList");
+		} else if (exclude == "POST") {
+			list = new FileReader("./src/resources/PostExclusionList");
+		}
 		BufferedReader bufRead = new BufferedReader(list);
 		String myLine = null;
 
@@ -64,6 +68,7 @@ public class RefiningAlgorithmCS422 {
 			}
 		}
 		return input;
+
 	}
 
 	private static HashMap<String, Integer> negativeFilter(

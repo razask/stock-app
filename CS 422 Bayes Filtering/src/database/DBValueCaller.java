@@ -18,10 +18,18 @@ public class DBValueCaller {
 	static String articleURL = "Select CONTENT FROM ARTICLE_ARCHIVE WHERE URL=?";
 
 	static PreparedStatement wordReturner = null;
-	static String DBword = "Select * FROM WORD_FREQ_DATA WHERE WORD=?";
+	static String DBword = "Select * FROM WORD_DATA WHERE WORD=?";
 
 	public static void main(String[] args) throws Exception {
+
 		String[] URLList;
+		String jca = "JCA";
+		String p = "P";
+		String bow = "BOW";
+		String ws = "WS";
+		String y = "Y";
+		String n = "N";
+
 		URLList = new String[18];
 
 		URLList[0] = new String(
@@ -61,11 +69,12 @@ public class DBValueCaller {
 		URLList[17] = new String(
 				"http://www.guardian.co.uk/film/2013/feb/28/hansel-gretel-witch-hunters-review");
 
-		dataPuller(URLList);
+		dataPuller(URLList, p, ws, n);
 
 	}
 
-	public static void dataPuller(String[] URLList) throws Exception {
+	public static void dataPuller(String[] URLList, String x, String y, String z)
+			throws Exception {
 
 		double count = 0;
 		double calvalue = 0;
@@ -73,11 +82,17 @@ public class DBValueCaller {
 		String key = null;
 		double value = 0;
 
+		double evalScore = 0;
 		double wordValue = 0;
 		double wordCount = 0;
 		double wordScore = 0;
+		double recipScore = 0;
+		double runningCount = 0;
+		double recipRunningCount = 0;
 
 		String content = null;
+
+		ResultSet extractedContent = null;
 
 		Connection c = null;
 
@@ -97,12 +112,15 @@ public class DBValueCaller {
 		for (int i = 0; i < URLList.length; i++) {
 			articleReturner = c.prepareStatement(articleURL);
 			articleReturner.setString(1, URLList[i]);
-			ResultSet extractedContent = articleReturner.executeQuery();
+			extractedContent = articleReturner.executeQuery();
 			while (extractedContent.next()) {
 				content = extractedContent.getNString(1);
 			}
 			HashMap<String, Integer> wordFreq = RefiningAlgorithmCS422
 					.counter(content);
+			if (z == "Y") {
+				wordFreq = RefiningAlgorithmCS422.filter(wordFreq, "POST");
+			}
 			for (Entry<String, Integer> entry : wordFreq.entrySet()) {
 				key = entry.getKey();
 				value = entry.getValue();
@@ -110,28 +128,49 @@ public class DBValueCaller {
 				wordReturner.setString(1, key);
 				ResultSet wordData = wordReturner.executeQuery();
 				while (wordData.next()) {
-					wordValue = wordData.getDouble(2);
-					wordCount = wordData.getDouble(3);
-					wordScore = wordValue / wordCount;
+					if (y == "BOW") {
+						wordValue = wordData.getDouble(2);
+						wordCount = wordData.getDouble(4);
+					} else if (y == "WS") {
+						wordValue = wordData.getDouble(3);
+						wordCount = wordData.getDouble(5);
+					}
+					if (x == "JCA") {
+						wordScore = wordValue / wordCount;
+						calvalue += wordScore * value;
+						count += value;
+					} else if (x == "P") {
+						wordScore = wordValue / wordCount;
+						calvalue += wordScore;
+						count += value;
+						
+//						if (runningCount == 0) {
+//							runningCount = wordValue / wordCount;
+//						} else {
+//							runningCount = (wordValue / wordCount)
+//									* runningCount;
+//						}
+//						recipScore = wordCount - wordValue;
+//						if (recipRunningCount == 0) {
+//							recipRunningCount = recipScore / wordCount;
+//						} else {
+//							recipRunningCount = (recipScore / wordCount)
+//									* recipRunningCount;
+//						}
+					}
 				}
-				calvalue += wordScore * value;
-				count += value;
 			}
-			double evalScore = calvalue / count;
-			System.out.println(URLList[i]);
-			System.out.println(evalScore);
-		}
-		
-//		for (int i = 0; i < URLList.length; i++) {
-//			articleReturner = c.prepareStatement(articleURL);
-//			articleReturner.setString(1, URLList[i]);
-//			ResultSet extractedContent = articleReturner.executeQuery();
-//			while (extractedContent.next()) {
-//				content = extractedContent.getNString(1);
+//			System.out.println(URLList[i]);
+
+//			if (x == "JCA") {
+				evalScore = calvalue / count;
+//
+//			} else if (x == "P") {
+//				evalScore = runningCount / (runningCount + recipRunningCount);
 //			}
-//			float result = ParserCS422.dumbreview(content);
-//			System.out.println(result);
-//		}
+			System.out.println(evalScore);
+
+		}
 	}
 
 }

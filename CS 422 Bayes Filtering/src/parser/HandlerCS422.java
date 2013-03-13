@@ -28,13 +28,14 @@ public class HandlerCS422 {
 		try {
 			System.out.println("starting");
 
-			FileReader list = new FileReader("./src/resources/movielist");
+			FileReader list = new FileReader("./src/resources/workingList");
 			BufferedReader bufRead = new BufferedReader(list);
 			String myLine = null;
 			while ((myLine = bufRead.readLine()) != null) {
 				String[] parselist = myLine.split("\n");
 				for (int i = 0; i < parselist.length; i++) {
 					String word = parselist[i];
+					System.out.println(word);
 					try {
 						doc = JsoupConnectorCS422
 								.connector("http://www.metacritic.com/movie/"
@@ -42,7 +43,7 @@ public class HandlerCS422 {
 						rlist = ExtractorCS422.reviewList(doc);
 						media = ExtractorCS422.extractMedia(doc);
 					} catch (Exception e) {
-						System.out.println(word);
+						System.out.println(word + " failed");
 					}
 
 					size = rlist.length;
