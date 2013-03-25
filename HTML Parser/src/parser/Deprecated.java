@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
 
 import de.l3s.boilerpipe.extractors.ArticleExtractor;
 
-public class Parser {
+public class Deprecated {
 
 	public Map<String, Integer> frequencies;
 

@@ -26,12 +26,7 @@ public class FeedReader {
 
       	for (Iterator iterator = feeder.getEntries().iterator(); iterator.hasNext();) {
         	SyndEntry syndEntry = (SyndEntry) iterator.next();
-        	System.out.println(syndEntry.getTitle());
-			System.out.println("Link: " + syndEntry.getLink());
-			System.out.println("Publish Date: " + syndEntry.getPublishedDate());
-			System.out.println("Description: " + syndEntry.getDescription().getValue());
-			Handler.main(syndEntry.getLink());
-       	 	System.out.println();
+			Handler.main(syndEntry);
       		}
     	} finally {
       	if (xmlReader != null)
