@@ -87,7 +87,7 @@ public class DBValueCaller {
 		double wordCount = 0;
 		double wordScore = 0;
 		double recipScore = 0;
-		double runningCount = 0;
+		double runningCount = 1;
 		double recipRunningCount = 0;
 
 		String content = null;
@@ -110,6 +110,9 @@ public class DBValueCaller {
 		System.out.println("Connected database successfully...");
 
 		for (int i = 0; i < URLList.length; i++) {
+			calvalue = 0;
+			count = 0;
+			runningCount = 0;
 			articleReturner = c.prepareStatement(articleURL);
 			articleReturner.setString(1, URLList[i]);
 			extractedContent = articleReturner.executeQuery();
@@ -137,40 +140,51 @@ public class DBValueCaller {
 					}
 					if (x == "JCA") {
 						wordScore = wordValue / wordCount;
+//						calvalue += wordScore * value;
+//						count += value;
+						calvalue += wordScore;
+						count += 1;
+					} else if (x == "P") {
+						recipScore = wordCount - wordValue;
+						if (wordValue == 0){
+							wordScore = 0;
+						}else {
+						wordScore = recipScore / wordValue;
+						}
 						calvalue += wordScore * value;
 						count += value;
-					} else if (x == "P") {
-						wordScore = wordValue / wordCount;
-						calvalue += wordScore;
-						count += value;
-						
-//						if (runningCount == 0) {
-//							runningCount = wordValue / wordCount;
-//						} else {
-//							runningCount = (wordValue / wordCount)
-//									* runningCount;
-//						}
-//						recipScore = wordCount - wordValue;
-//						if (recipRunningCount == 0) {
-//							recipRunningCount = recipScore / wordCount;
-//						} else {
-//							recipRunningCount = (recipScore / wordCount)
-//									* recipRunningCount;
-//						}
+						runningCount *= wordScore;
+
+//						 if (runningCount == 0) {
+//						 runningCount = wordValue / wordCount;
+//						 } else {
+//						 runningCount = (wordValue / wordCount)
+//						 * runningCount;
+//						 }
+//						 recipScore = wordCount - wordValue;
+//						 if (recipRunningCount == 0) {
+//						 recipRunningCount = recipScore / wordCount;
+//						 } else {
+//						 recipRunningCount = (recipScore / wordCount)
+//						 * recipRunningCount;
+//						 }
 					}
 				}
 			}
-//			System.out.println(URLList[i]);
+			// System.out.println(URLList[i]);
 
-//			if (x == "JCA") {
-				evalScore = calvalue / count;
-//
-//			} else if (x == "P") {
-//				evalScore = runningCount / (runningCount + recipRunningCount);
-//			}
+//			 if (x == "JCA") {
+			 evalScore = calvalue / count;
+//			evalScore = runningCount / count;
+//			evalScore = 1 / (1 + runningCount);
+			//
+//			 } else if (x == "P") {
+//			 evalScore = runningCount / (runningCount + recipRunningCount);
+//			 }
 			System.out.println(evalScore);
 
 		}
+		System.out.println("doneskis");
 	}
 
 }
